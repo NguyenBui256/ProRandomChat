@@ -1,6 +1,5 @@
 package com.example.prorandomchata;
 
-import com.example.prorandomchata.Model.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -8,14 +7,19 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.text.Text;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.util.Set;
 
-public class chatTabController {
-    private User sender, receiver;
+public class chatTabController implements Serializable{
     private MainController mainController;
+
+    private User sender, receiver;
+
+    private ChatClient chatClient;
+
+    private ChatServer chatServer;
+
     @FXML
     private ImageView receiverAvatar;
 
@@ -26,27 +30,89 @@ public class chatTabController {
     private Label receiverName, receiverAge, receiverGender, receiverLocation;
 
     @FXML
-    private Button viewBtn, addFriendBtn, blockBtn, sendBtn;
+    private Button viewBtn, addFriendBtn, blockBtn, sendBtn, connectBtn, disconnectBtn;
 
-    public void setUser(User sender, MainController mainController)
-    {
-        this.mainController = mainController;
-//        receiverName.setText(receiver.getUserName());
-//        receiverAge.setText(String.valueOf(receiver.getUserAge()));
-//        receiverGender.setText(receiver.getUserGender());
-//        receiverLocation.setText(receiver.getUserLocation());
-//        receiverAvatar.setImage(new Image(new File(receiver.getUserAvatarPath()).toURI().toString()));
-
-        this.sender = sender;
-//        this.receiver = receiver;
-        textHistory.setEditable(false);
-        textTyping.setEditable(true);
-    }
+    @FXML
+    private Label coverLayer;
 
     @FXML
     public void view(ActionEvent event) throws IOException {
         mainController.addNewProfileTab(receiver);
-        System.out.println("yessir");
     }
 
+    @FXML
+    public void send(ActionEvent event)
+    {
+        new WriteThread(chatClient.getSocket(), chatClient, this).start();
+    }
+
+    @FXML
+    public void connect(ActionEvent event) throws IOException {
+        connectBtn.setVisible(false);
+        disconnectBtn.setVisible(true);
+        coverLayer.setVisible(false);
+
+        chatClient = new ChatClient(sender, 3000);
+        chatClient.execute(this);
+        Set<User> users = ChatServer.users;
+        for(User aUser : users)
+        {
+            System.out.println(aUser.getUserName());
+            if(this.chatServer.map.get(aUser) == 0)
+            {
+                this.chatServer.map.put(aUser,1);
+                setReceiver(aUser);
+                break;
+            }
+        }
+    }
+
+    @FXML
+    public void disconnect(ActionEvent event) throws IOException {
+        textHistory.setText("");
+        textTyping.setText("###exit###");
+        new WriteThread(chatClient.getSocket(), chatClient, this).start();
+        textTyping.setText("");
+        disconnectBtn.setVisible(false);
+        connectBtn.setVisible(true);
+        coverLayer.setVisible(true);
+    }
+
+    public void setSender(User sender, MainController mainController)
+    {
+        this.mainController = mainController;
+        this.sender = sender;
+        textHistory.setEditable(false);
+        textTyping.setEditable(true);
+        disconnectBtn.setVisible(false);
+
+        coverLayer.setStyle("-fx-background-color:gray; -fx-opacity:0.3");
+        coverLayer.setVisible(true);
+        connectBtn.setVisible(true);
+    }
+    public void setReceiver(User receiver)
+    {
+        this.receiver = receiver;
+        receiverName.setText(receiver.getUserName());
+        receiverAge.setText(String.valueOf(receiver.getUserAge()));
+        receiverGender.setText(receiver.getUserGender());
+        receiverLocation.setText(receiver.getUserLocation());
+        receiverAvatar.setImage(new Image(new File(receiver.getUserAvatarPath()).toURI().toString()));
+    }
+
+    public TextArea getTextHistory() {
+        return textHistory;
+    }
+
+    public TextArea getTextTyping() {
+        return textTyping;
+    }
+
+    public Button getSendBtn() {
+        return sendBtn;
+    }
+
+    public User getSender() {
+        return sender;
+    }
 }

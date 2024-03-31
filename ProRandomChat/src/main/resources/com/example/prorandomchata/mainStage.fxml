@@ -9,7 +9,6 @@
 <?import javafx.scene.control.SplitMenuButton?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -80,29 +79,6 @@
                      </children></AnchorPane>
             </content>
           </Tab>
-            <Tab text="Random Chat">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="666.0" prefWidth="760.0">
-                           <children>
-                              <TextArea layoutX="5.0" layoutY="550.0" prefHeight="111.0" prefWidth="641.0" />
-                              <Button layoutX="651.0" layoutY="550.0" mnemonicParsing="false" prefHeight="111.0" prefWidth="114.0" text="Send" />
-                              <TextArea layoutX="6.0" layoutY="115.0" prefHeight="430.0" prefWidth="762.0" />
-                              <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="31.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
-                              <Label layoutX="144.0" layoutY="14.0" text="Name" />
-                              <Label layoutX="146.0" layoutY="42.0" text="Age" />
-                              <Label layoutX="201.0" layoutY="42.0" text="Gender" />
-                              <Label layoutX="143.0" layoutY="77.0" text="Location" />
-                              <Button layoutX="632.0" layoutY="17.0" mnemonicParsing="false" text="View Profile" />
-                              <Button layoutX="632.0" layoutY="44.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="79.0" text="Add Friend" />
-                              <Button layoutX="632.0" layoutY="71.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="79.0" text="Block" />
-                           </children>
-                        </AnchorPane>
-                     </children>
-                  </AnchorPane>
-              </content>
-            </Tab>
         </tabs>
       </TabPane>
    </center>

@@ -1,6 +1,5 @@
 package com.example.prorandomchata;
 
-import com.example.prorandomchata.Model.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,7 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -23,6 +21,8 @@ public class MainController {
     private Stage stage;
     private Scene scene;
     private Parent root;
+
+    private ChatServer server;
 
     @FXML
     private Label userName;
@@ -62,7 +62,7 @@ public class MainController {
     }
 
     public void setUser(User user) throws IOException {
-        sender = user;
+        this.sender = user;
         userName.setText(user.getUserName());
         userAvatar.setImage(new Image(new File(user.getUserAvatarPath()).toURI().toString()));
         userAvatar.setCache(true);
@@ -78,10 +78,10 @@ public class MainController {
         root = loader.load();
 
         chatTabController chatTabController = loader.getController();
-        chatTabController.setUser(sender,this);
+        chatTabController.setSender(this.sender,this);
 
         Tab tab = new Tab();
-        tab.setText(sender.getUserName());
+        tab.setText("Pro Random Chat");
         tab.setContent(root);
         mainTabPane.getTabs().add(tab);
         mainTabPane.getSelectionModel().selectLast();
@@ -127,4 +127,13 @@ public class MainController {
         mainTabPane.getTabs().add(tab);
         mainTabPane.getSelectionModel().selectLast();
     }
+
+
+//    public ChatServer getServer() {
+//        return server;
+//    }
+
+//    public void setServer(ChatServer server) {
+//        this.server = server;
+//    }
 }

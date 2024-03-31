@@ -1,7 +1,6 @@
 package com.example.prorandomchata;
 
 import com.example.prorandomchata.Controller.IOSystem;
-import com.example.prorandomchata.Model.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +14,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
-import java.util.Objects;
 
 import static java.lang.Math.abs;
 
@@ -23,6 +21,7 @@ public class LoginController {
     private Stage stage;
     private Scene scene;
     private Parent root;
+    private ChatServer chatServer;
     IOSystem ios = new IOSystem();
     @FXML
     private TextField loginUsername, regisUsername, regisLocation, regisFullname;
@@ -103,11 +102,12 @@ public class LoginController {
             alert.setContentText("Success");
             alert.show();
 
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("mainStage.fxml"));
             root = loader.load();
-
             MainController mainController = loader.getController();
             mainController.setUser(userClient);
+            mainController.addRandomChatTab();
 
             stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             scene = new Scene(root);
@@ -123,4 +123,13 @@ public class LoginController {
             loginPassword.setText("");
         }
     }
+
+//    public ChatServer getChatServer() {
+//        return chatServer;
+//    }
+
+//    public void setChatServer(ChatServer chatServer)
+//    {
+//        this.chatServer = chatServer;
+//    }
 }
