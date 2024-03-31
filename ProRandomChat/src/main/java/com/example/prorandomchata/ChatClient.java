@@ -21,6 +21,8 @@ public class ChatClient implements Serializable{
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             oos.writeObject(user);
             oos.flush();
+            ChatServer.users.add(user);
+            System.out.println(ChatServer.users.size());
             System.out.println("Connected to the chat server");
 
             new ReadThread(socket, this, chatTabController).start();

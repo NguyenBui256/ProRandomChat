@@ -5,18 +5,20 @@ import java.net.*;
 import java.util.*;
 
 public class ChatServer implements Serializable{
-    public static int port;
+    public static int port = 3000;
     //Lưu danh sách các tài khoản người dùng
-    public static Set<User> users = new HashSet<>();
+    public static List<User> users = new ArrayList<>();
     public static Set<UserThread> userThreads = new HashSet<>();
 
     public static Map<User,Integer> map = new HashMap<>();
+
+    public static String name = "";
 
     public ChatServer(int port) {
         this.port = port;
     }
 
-    public void execute() {
+    static void execute() {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
 
             System.out.println("Chat Server is listening on port " + port);
@@ -27,11 +29,13 @@ public class ChatServer implements Serializable{
 //                oos.writeObject(this);
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                 User user = (User) ois.readObject();
+                name = user.getUserName();
                 System.out.println("New user connected");
 
+                users.add(user);
                 UserThread newUser = new UserThread(socket, user);
                 userThreads.add(newUser);
-//                map.put(user,0);
+                map.put(user,0);
                 newUser.start();
             }
 
@@ -46,7 +50,7 @@ public class ChatServer implements Serializable{
     /**
      * Gửi các message từ 1 người dùng tới các người dùng khác - gửi dạng quảng bá
      */
-    void broadcast(String message, UserThread excludeUser) {
+    static void broadcast(String message, UserThread excludeUser) {
         for (UserThread aUser : userThreads) {
             if (aUser != excludeUser) {
                 aUser.sendMessage(message);
@@ -57,14 +61,14 @@ public class ChatServer implements Serializable{
     /**
      * Lưu username của client mới được kết nối.
      */
-    void addUser(User user) {
+    static void addUser(User user) {
         users.add(user);
     }
 
     /**
      * Khi client ngắt kết nối, sẽ bỏ username và UserThread
      */
-    void removeUser(User user, UserThread aUser) {
+    static void removeUser(User user, UserThread aUser) {
         boolean removed = users.remove(user);
         if (removed) {
             userThreads.remove(aUser);

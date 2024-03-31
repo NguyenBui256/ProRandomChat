@@ -30,7 +30,7 @@ public class UserThread extends Thread {
             OutputStream output = socket.getOutputStream();
             writer = new PrintWriter(output, true);
 
-            server.addUser(user);
+            ChatServer.addUser(user);
             System.out.println("New user connected: " + user.getUserName() + " => Current users: " + ChatServer.users.size());
 
             String clientMessage;
@@ -57,7 +57,7 @@ public class UserThread extends Thread {
      */
     void printUsers() {
         if (!ChatServer.users.isEmpty()) {
-            Set<User> userList = ChatServer.users;
+            List<User> userList = ChatServer.users;
             for(User user : userList)
             {
                 System.out.println(user.getUserName());

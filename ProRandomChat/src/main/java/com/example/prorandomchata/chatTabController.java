@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.*;
+import java.util.List;
 import java.util.Set;
 
 public class chatTabController implements Serializable{
@@ -17,8 +18,6 @@ public class chatTabController implements Serializable{
     private User sender, receiver;
 
     private ChatClient chatClient;
-
-    private ChatServer chatServer;
 
     @FXML
     private ImageView receiverAvatar;
@@ -54,16 +53,18 @@ public class chatTabController implements Serializable{
 
         chatClient = new ChatClient(sender, 3000);
         chatClient.execute(this);
-        Set<User> users = ChatServer.users;
+
+        System.out.println(ChatServer.users.size());
+        List<User> users = ChatServer.users;
         for(User aUser : users)
         {
             System.out.println(aUser.getUserName());
-            if(this.chatServer.map.get(aUser) == 0)
-            {
-                this.chatServer.map.put(aUser,1);
-                setReceiver(aUser);
-                break;
-            }
+//            if(ChatServer.map.get(aUser) == 0)
+//            {
+//                ChatServer.map.put(aUser,1);
+//                setReceiver(aUser);
+//                break;
+//            }
         }
     }
 
