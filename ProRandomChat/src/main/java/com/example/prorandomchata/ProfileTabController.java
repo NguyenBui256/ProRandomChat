@@ -10,7 +10,7 @@ import javafx.scene.image.ImageView;
 
 import java.io.File;
 
-public class profileTabController {
+public class ProfileTabController {
     private User user;
     private MainController mainController;
     @FXML

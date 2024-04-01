@@ -7,7 +7,7 @@ import javafx.scene.image.ImageView;
 
 import java.io.File;
 
-public class testController {
+public class TestController {
     private Image userAvatar = new Image(new File("C:\\Users\\ADMIN\\IdeaProjects\\ProRandomChat\\ProRandomChat-A\\src\\main\\resources\\img\\ava.png").toURI().toString());
     @FXML
     private ImageView imgv;

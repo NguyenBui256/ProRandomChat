@@ -1,7 +1,5 @@
 package com.example.prorandomchata;
 
-import com.example.prorandomchata.chatTabController;
-
 import java.io.Serializable;
 
 /**
@@ -11,6 +9,8 @@ import java.io.Serializable;
 public class User implements Serializable {
     private String userName, userDescription, userGender, userLocation, userPassword, userFullname, userAvatarPath = "src/main/resources/img/ava.png";
     private int userAge;
+
+    public boolean status = false;
 
     public User(String userName, String userPassword, String userFullname,  String userGender, String userLocation, int userAge) {
         this.userPassword = userPassword;

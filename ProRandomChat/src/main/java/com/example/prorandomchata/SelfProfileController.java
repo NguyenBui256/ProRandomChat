@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class selfProfileController {
+public class SelfProfileController {
     private User user;
     private MainController mainController;
     private IOSystem ios = new IOSystem();

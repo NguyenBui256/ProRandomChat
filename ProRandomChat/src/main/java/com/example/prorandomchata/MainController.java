@@ -50,7 +50,7 @@ public class MainController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("selfProfile.fxml"));
         root = loader.load();
 
-        selfProfileController selfProfileController = loader.getController();
+        SelfProfileController selfProfileController = loader.getController();
         selfProfileController.setUser(sender,this);
 
         Tab tab = new Tab();
@@ -77,7 +77,7 @@ public class MainController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("chatTab.fxml"));
         root = loader.load();
 
-        chatTabController chatTabController = loader.getController();
+        ChatTabController chatTabController = loader.getController();
         chatTabController.setSender(this.sender,this);
 
         Tab tab = new Tab();
@@ -118,7 +118,7 @@ public class MainController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("profileTab.fxml"));
         root = loader.load();
 
-        profileTabController profileTabController = loader.getController();
+        ProfileTabController profileTabController = loader.getController();
         profileTabController.setUser(user, this);
 
         Tab tab = new Tab();

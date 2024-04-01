@@ -23,6 +23,8 @@ public class HelloApplication extends Application {
 //        IOSystem ios = new IOSystem();
 //        ios.clearData("userlist.txt");
 //        User user = new User("btvn", "123", "Bui The Vinh Nguyen", "male", "hanoi", 19);
+//        ChatServer.addUser(user);
+//        System.out.println(ChatServer.users.size());
 //        List<User> list = new ArrayList<>();
 //        list.add(user);
 //        ios.write(list,"userlist.txt");

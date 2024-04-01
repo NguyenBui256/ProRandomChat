@@ -12,44 +12,48 @@ import java.util.*;
 public class UserThread extends Thread {
     private User user;
     private Socket socket;
-    private ChatServer server;
-    private PrintWriter writer;
-    private chatTabController chatTabController;
 
-    public UserThread(Socket socket, User user) {
+    private ObjectOutputStream oos;
+    private ChatTabController chatTabController;
+
+    public UserThread(Socket socket, User user, ObjectOutputStream oos) {
         this.socket = socket;
         this.user = user;
+        this.oos = oos;
 //        this.chatTabController = chatTabController;
     }
 
     public void run() {
         try {
             InputStream input = socket.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-
-            OutputStream output = socket.getOutputStream();
-            writer = new PrintWriter(output, true);
-
-            ChatServer.addUser(user);
+            ObjectInputStream reader = new ObjectInputStream(input);
             System.out.println("New user connected: " + user.getUserName() + " => Current users: " + ChatServer.users.size());
-
-            String clientMessage;
+            printUsers();
+            Object fromServer = reader.readObject();
             do {
-                clientMessage = reader.readLine();
-                server.broadcast(clientMessage, this);
-
-            } while (!clientMessage.equals("###exit###"));
-
-            server.removeUser(user, this);
+                if(fromServer instanceof String)
+                {
+                    ChatServer.broadcast((String) fromServer, this);
+                }
+                else if(fromServer instanceof List<?>)
+                {
+                    ChatServer.setUsers((List<User>) fromServer);
+                }
+            } while (!fromServer.equals("###exit###"));
+//
+            ChatServer.removeUser(user, this);
             socket.close();
-
-            String serverMessage = user.getUserName() + " has quitted.";
-            server.broadcast(serverMessage, this);
+//
+//            String serverMessage = user.getUserName() + " has quitted.";
+//            ChatServer.broadcast(serverMessage, this);
 
         } catch (IOException ex) {
             System.out.println("Error in UserThread: " + ex.getMessage());
             ex.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
+
     }
 
     /**
@@ -60,15 +64,20 @@ public class UserThread extends Thread {
             List<User> userList = ChatServer.users;
             for(User user : userList)
             {
-                System.out.println(user.getUserName());
+                System.out.println("Connected user: " + user.getUserName());
             }
         }
+        else System.out.println("No other users");
     }
 
     /**
      * Gửi message tới client.
      */
-    void sendMessage(String message) {
-        writer.println(message);
+    void sendMessage(String message) throws IOException {
+        oos.writeObject(message);
+    }
+
+    public Socket getSocket() {
+        return socket;
     }
 }

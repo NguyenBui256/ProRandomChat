@@ -9,15 +9,19 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.*;
+import java.net.Socket;
 import java.util.List;
-import java.util.Set;
 
-public class chatTabController implements Serializable{
+public class ChatTabController implements Serializable{
     private MainController mainController;
+
+    private Socket socket;
 
     private User sender, receiver;
 
     private ChatClient chatClient;
+
+    private ObjectOutputStream oos;
 
     @FXML
     private ImageView receiverAvatar;
@@ -40,9 +44,20 @@ public class chatTabController implements Serializable{
     }
 
     @FXML
-    public void send(ActionEvent event)
-    {
-        new WriteThread(chatClient.getSocket(), chatClient, this).start();
+    public void send(ActionEvent event) throws IOException {
+        if(!textTyping.getText().equals("###exit###") && !textTyping.getText().isEmpty())
+        {
+            String text = "[" + sender.getUserName() + "]: " + textTyping.getText();
+            textHistory.appendText(text + "\n");
+            textTyping.setText("");
+            oos.writeObject(text);
+            oos.flush();
+        }
+        else if(textTyping.getText().equals("###exit###"))
+        {
+            oos.writeObject("###exit###");
+            oos.flush();
+        }
     }
 
     @FXML
@@ -51,28 +66,21 @@ public class chatTabController implements Serializable{
         disconnectBtn.setVisible(true);
         coverLayer.setVisible(false);
 
-        chatClient = new ChatClient(sender, 3000);
-        chatClient.execute(this);
+        chatClient = new ChatClient(sender,this);
+        socket = new Socket("localhost", 3000);
+        oos = new ObjectOutputStream(socket.getOutputStream());
+        oos.writeObject(sender);
+        oos.flush();
 
-        System.out.println(ChatServer.users.size());
-        List<User> users = ChatServer.users;
-        for(User aUser : users)
-        {
-            System.out.println(aUser.getUserName());
-//            if(ChatServer.map.get(aUser) == 0)
-//            {
-//                ChatServer.map.put(aUser,1);
-//                setReceiver(aUser);
-//                break;
-//            }
-        }
+        new ReadThread(socket,this).start();
+        System.out.println("Connected to the chat server");
     }
 
     @FXML
     public void disconnect(ActionEvent event) throws IOException {
         textHistory.setText("");
         textTyping.setText("###exit###");
-        new WriteThread(chatClient.getSocket(), chatClient, this).start();
+//        new WriteThread(chatClient.getSocket(), chatClient, this).start();
         textTyping.setText("");
         disconnectBtn.setVisible(false);
         connectBtn.setVisible(true);
@@ -93,7 +101,7 @@ public class chatTabController implements Serializable{
     }
     public void setReceiver(User receiver)
     {
-        this.receiver = receiver;
+//        this.receiver = receiver;
         receiverName.setText(receiver.getUserName());
         receiverAge.setText(String.valueOf(receiver.getUserAge()));
         receiverGender.setText(receiver.getUserGender());

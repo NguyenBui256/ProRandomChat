@@ -6,7 +6,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="666.0" prefWidth="760.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.prorandomchata.chatTabController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="666.0" prefWidth="760.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.prorandomchata.ChatTabController">
    <children>
       <TextArea fx:id="textTyping" layoutX="5.0" layoutY="550.0" prefHeight="111.0" prefWidth="641.0" />
       <Button fx:id="sendBtn" layoutX="651.0" layoutY="550.0" mnemonicParsing="false" onAction="#send" prefHeight="111.0" prefWidth="106.0" text="Send" />

@@ -2,36 +2,19 @@ package com.example.prorandomchata;
 
 import java.net.*;
 import java.io.*;
+import java.util.List;
 
 public class ChatClient implements Serializable{
     private int port;
     private Socket socket;
     private User user;
-    private chatTabController chatTabController;
+    private ChatTabController chatTabController;
 
-    public ChatClient(User user, int port) {
+    public List<User> users;
+
+    public ChatClient(User user, ChatTabController chatTabController) {
         this.user = user;
-        this.port = ChatServer.port;
-    }
-
-    public void execute(chatTabController chatTabController) {
         this.chatTabController = chatTabController;
-        try {
-            socket = new Socket("localhost", port);
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-            oos.writeObject(user);
-            oos.flush();
-            ChatServer.users.add(user);
-            System.out.println(ChatServer.users.size());
-            System.out.println("Connected to the chat server");
-
-            new ReadThread(socket, this, chatTabController).start();
-
-        } catch (UnknownHostException ex) {
-            System.out.println("Server not found: " + ex.getMessage());
-        } catch (IOException ex) {
-            System.out.println("I/O Error: " + ex.getMessage());
-        }
     }
 
     public Socket getSocket() {
@@ -46,7 +29,12 @@ public class ChatClient implements Serializable{
         this.user = user;
     }
 
-    public chatTabController getChatTabController() {
+    public ChatTabController getChatTabController() {
         return chatTabController;
+    }
+
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 }

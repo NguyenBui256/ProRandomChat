@@ -2,7 +2,7 @@ package com.example.prorandomchata;
 
 import java.io.IOException;
 
-public class serverStarter {
+public class ServerStarter {
     static ChatServer chatServer = new ChatServer(3000);
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         chatServer.execute();
