@@ -18,9 +18,9 @@
       <Label fx:id="receiverLocation" layoutX="143.0" layoutY="77.0" text="Location" />
       <Button fx:id="viewBtn" layoutX="543.0" layoutY="32.0" mnemonicParsing="false" onAction="#view" text="View Profile" />
       <Button fx:id="addFriendBtn" layoutX="543.0" layoutY="65.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="79.0" text="Add Friend" />
-      <Button fx:id="disconnectBtn" layoutX="635.0" layoutY="41.0" mnemonicParsing="false" onAction="#disconnect" prefHeight="39.0" prefWidth="79.0" text="Disconnect" />
-      <Label fx:id="coverLayer" layoutX="6.0" layoutY="5.0" prefHeight="655.0" prefWidth="751.0" />
+      <Label fx:id="coverLayer" layoutX="6.0" layoutY="5.0" prefHeight="655.0" prefWidth="751.0" visible="false" />
+      <Button fx:id="disconnectBtn" layoutX="631.0" layoutY="45.0" mnemonicParsing="false" onAction="#disconnect" prefHeight="39.0" prefWidth="79.0" text="Disconnect" />
       <Button fx:id="connectBtn" layoutX="331.0" layoutY="308.0" mnemonicParsing="false" onAction="#connect" prefHeight="50.0" prefWidth="104.0" text="Connect" />
-      <Button fx:id="nextBtn" layoutX="338.0" layoutY="41.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="90.0" text="Next" />
+      <Button fx:id="nextBtn" layoutX="338.0" layoutY="41.0" mnemonicParsing="false" onAction="#next" prefHeight="37.0" prefWidth="90.0" text="Next" />
    </children>
 </AnchorPane>

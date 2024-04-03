@@ -11,18 +11,18 @@ import javafx.scene.image.ImageView;
 import java.io.File;
 
 public class ProfileTabController {
-    private User user;
-    private MainController mainController;
+    protected User user;
+    protected MainController mainController;
     @FXML
-    private Button addFriendBtn, sendMessageBtn, blockBtn;
+    protected Button addFriendBtn, sendMessageBtn, blockBtn;
     @FXML
-    private TextField userName, userLocation, userFullname;
+    protected TextField userName, userLocation, userFullname;
     @FXML
-    private Label userAge, userGender;
+    protected Label userAge, userGender;
     @FXML
-    private TextArea userDescription;
+    protected TextArea userDescription;
     @FXML
-    private ImageView userAvatar;
+    protected ImageView userAvatar;
     public void setUser(User user, MainController mainController){
         this.user = user;
         this.mainController = mainController;

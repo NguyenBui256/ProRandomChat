@@ -11,11 +11,10 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
-
-import static java.lang.Math.abs;
 
 public class LoginController {
     private Stage stage;
@@ -102,7 +101,6 @@ public class LoginController {
             alert.setContentText("Success");
             alert.show();
 
-
             FXMLLoader loader = new FXMLLoader(getClass().getResource("mainStage.fxml"));
             root = loader.load();
             MainController mainController = loader.getController();
@@ -110,6 +108,7 @@ public class LoginController {
             mainController.addRandomChatTab();
 
             stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            stage.setResizable(false);
             scene = new Scene(root);
             stage.setScene(scene);
             stage.show();

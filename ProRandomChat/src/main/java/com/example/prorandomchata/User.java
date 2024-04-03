@@ -1,13 +1,20 @@
 package com.example.prorandomchata;
 
 import java.io.Serializable;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author ADMIN
  */
 public class User implements Serializable {
-    private String userName, userDescription, userGender, userLocation, userPassword, userFullname, userAvatarPath = "src/main/resources/img/ava.png";
+    protected String userName, userDescription, userGender, userLocation, userPassword,
+            userFullname, userAvatarPath = "src/main/resources/img/ava.png";
+    public String userPartnerName;
+
+    public List<String> blockUsers = new ArrayList<String>();
     private int userAge;
 
     public boolean status = false;
@@ -19,6 +26,7 @@ public class User implements Serializable {
         this.userGender = userGender;
         this.userLocation = userLocation;
         this.userAge = userAge;
+        this.userPartnerName = "";
     }
 
     public String getUserAvatarPath() {
@@ -83,4 +91,5 @@ public class User implements Serializable {
     public void setUserAge(int userAge) {
         this.userAge = userAge;
     }
+
 }

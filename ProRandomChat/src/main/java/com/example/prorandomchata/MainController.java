@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainController {
-    private User sender, receiver;
+    private User sender;
     private Stage stage;
     private Scene scene;
     private Parent root;
@@ -38,15 +38,16 @@ public class MainController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if(result.get()== ButtonType.OK) {
-            root = FXMLLoader.load((HelloApplication.class.getResource("loginForm.fxml")));
+            root = FXMLLoader.load((AppStarter.class.getResource("loginForm.fxml")));
             stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            stage.setResizable(false);
             scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
         }
     }
     @FXML
-    public void viewSelfProfile(ActionEvent event) throws IOException {
+    public void viewSelfProfile(ActionEvent event) throws IOException, ClassNotFoundException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("selfProfile.fxml"));
         root = loader.load();
 
@@ -56,9 +57,19 @@ public class MainController {
         Tab tab = new Tab();
         tab.setText("Your Profile (" + sender.getUserName() + ")");
         tab.setContent(root);
-
         checkTabUsing(tab);
+    }
 
+    public void addNewProfileTab(User user) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("profileTab.fxml"));
+        root = loader.load();
+        ProfileTabController profileTabController = loader.getController();
+        profileTabController.setUser(user, this);
+
+        Tab tab = new Tab();
+        tab.setText(user.getUserName());
+        tab.setContent(root);
+        checkTabUsing(tab);
     }
 
     public void setUser(User user) throws IOException {
@@ -67,10 +78,6 @@ public class MainController {
         userAvatar.setImage(new Image(new File(user.getUserAvatarPath()).toURI().toString()));
         userAvatar.setCache(true);
         userAvatar.setVisible(true);
-
-//        addRandomChatTab();
-//        userAvatar.setFitHeight(55);
-//        userAvatar.setFitWidth(55);
     }
 
     public void addRandomChatTab() throws IOException {
@@ -78,7 +85,7 @@ public class MainController {
         root = loader.load();
 
         ChatTabController chatTabController = loader.getController();
-        chatTabController.setSender(this.sender,this);
+        chatTabController.setSender(sender,this);
 
         Tab tab = new Tab();
         tab.setText("Pro Random Chat");
@@ -88,14 +95,12 @@ public class MainController {
     }
 
     public void updateSave(User user) throws IOException {
-
         mainTabPane.getTabs().forEach(tabI -> {
-            if(tabI.getText().equals(userName.getText())){
-                tabI.setText(user.getUserName());
+            if(tabI.getText().equals(sender.getUserName())){
+                tabI.setText("Your Profile " + "("+user.getUserName()+")");
             }
         });
-        userName.setText(user.getUserName());
-        userAvatar.setImage(new Image(new File(user.getUserAvatarPath()).toURI().toString()));
+        setUser(user);
     }
 
     public void checkTabUsing(Tab tab){
@@ -113,27 +118,4 @@ public class MainController {
             mainTabPane.getSelectionModel().selectLast();
         }
     }
-
-    public void addNewProfileTab(User user) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("profileTab.fxml"));
-        root = loader.load();
-
-        ProfileTabController profileTabController = loader.getController();
-        profileTabController.setUser(user, this);
-
-        Tab tab = new Tab();
-        tab.setText(user.getUserName());
-        tab.setContent(root);
-        mainTabPane.getTabs().add(tab);
-        mainTabPane.getSelectionModel().selectLast();
-    }
-
-
-//    public ChatServer getServer() {
-//        return server;
-//    }
-
-//    public void setServer(ChatServer server) {
-//        this.server = server;
-//    }
 }

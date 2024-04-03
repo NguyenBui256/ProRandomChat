@@ -10,7 +10,7 @@
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="720.0" prefWidth="480.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.prorandomchata.LoginController">
+<AnchorPane prefHeight="650.0" prefWidth="480.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.prorandomchata.LoginController">
    <children>
       <Label alignment="CENTER" contentDisplay="CENTER" layoutX="147.0" layoutY="33.0" prefHeight="86.0" prefWidth="203.0" text="PRO RANDOM CHAT" />
       <Label alignment="CENTER" layoutX="227.0" layoutY="119.0" prefHeight="36.0" prefWidth="43.0" text="Login:" />

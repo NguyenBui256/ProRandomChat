@@ -9,10 +9,10 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="666.0" prefWidth="760.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.prorandomchata.ProfileTabController">
    <children>
-      <Label fx:id="userName" layoutX="98.0" layoutY="99.0" text="Username:" />
-      <Label fx:id="userAge" layoutX="98.0" layoutY="184.0" text="Age:" />
+      <Label layoutX="98.0" layoutY="99.0" text="Username:" />
+      <Label layoutX="98.0" layoutY="184.0" text="Age:" />
       <Label fx:id="userGender" layoutX="272.0" layoutY="184.0" text="Gender" />
-      <Label fx:id="userLocation" layoutX="98.0" layoutY="238.0" text="Location:" />
+      <Label layoutX="98.0" layoutY="238.0" text="Location:" />
       <ImageView fx:id="userAvatar" fitHeight="235.0" fitWidth="235.0" layoutX="440.0" layoutY="84.0" pickOnBounds="true" preserveRatio="true" />
       <Button fx:id="addFriendBtn" layoutX="429.0" layoutY="333.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="81.0" text="Add Friend" />
       <Button fx:id="sendMessageBtn" layoutX="517.0" layoutY="333.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="81.0" text="Message" />

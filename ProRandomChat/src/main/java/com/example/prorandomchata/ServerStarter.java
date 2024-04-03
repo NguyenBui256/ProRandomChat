@@ -3,12 +3,9 @@ package com.example.prorandomchata;
 import java.io.IOException;
 
 public class ServerStarter {
-    static ChatServer chatServer = new ChatServer(3000);
+    protected static ChatServer chatServer;
     public static void main(String[] args) throws IOException, ClassNotFoundException {
+        chatServer = new ChatServer(3000);
         chatServer.execute();
-    }
-
-    public static ChatServer getChatServer() {
-        return chatServer;
     }
 }
