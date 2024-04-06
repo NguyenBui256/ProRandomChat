@@ -16,7 +16,7 @@ public class ProfileTabController {
     @FXML
     protected Button addFriendBtn, sendMessageBtn, blockBtn;
     @FXML
-    protected TextField userName, userLocation, userFullname;
+    protected Label userName, userLocation, userFullname;
     @FXML
     protected Label userAge, userGender;
     @FXML
@@ -33,10 +33,6 @@ public class ProfileTabController {
         userLocation.setText(user.getUserLocation());
         userDescription.setText(user.getUserDescription());
         userAvatar.setImage(new Image(new File(user.getUserAvatarPath()).toURI().toString()));
-
-        userName.setEditable(false);
-        userFullname.setEditable(false);
-        userLocation.setEditable(false);
         userDescription.setEditable(false);
 
     }

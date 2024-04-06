@@ -9,9 +9,10 @@ import java.util.*;
 public class ChatServer implements Serializable{
     public static int port = 3000;
     //Lưu danh sách các tài khoản người dùng
-    public volatile static List<User> users = new ArrayList<>();
-    public static List<User> usersRegisted = new ArrayList<>();
-    public volatile static Map<String,ObjectOutputStream> userSocketMap = new HashMap<>();
+    public static List<String> users = new ArrayList<>(); //tên người dùng đang online.
+    public static List<User> usersRegisted = new ArrayList<>(); //danh sách tất cả người dùng đã đăng ký trong dtb.
+    public static Map<String,ObjectOutputStream> userOutStreamMap = new HashMap<>(); //Map link đến luồng gửi từ server đến người dùng trong app.
+    public static Map<String, User> userMap = new HashMap<>(); //Map link đến người dùng đang online
 
     public ChatServer(int port) throws IOException, ClassNotFoundException {
         this.port = port;
@@ -33,7 +34,4 @@ public class ChatServer implements Serializable{
             ex.printStackTrace();
         }
     }
-    /**
-     * Lấy danh sách các user đang kết nối
-     */
 }

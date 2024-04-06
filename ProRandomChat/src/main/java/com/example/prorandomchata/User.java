@@ -11,13 +11,13 @@ import java.util.List;
  */
 public class User implements Serializable {
     protected String userName, userDescription, userGender, userLocation, userPassword,
-            userFullname, userAvatarPath = "src/main/resources/img/ava.png";
+            userFullname, userAvatarPath = "src/main/resources/img/ava.png", genderCriteria = "All";
     public String userPartnerName;
 
     public List<String> blockUsers = new ArrayList<String>();
     private int userAge;
 
-    public boolean status = false;
+    public boolean status = false; //true - busy & false - free
 
     public User(String userName, String userPassword, String userFullname,  String userGender, String userLocation, int userAge) {
         this.userPassword = userPassword;
@@ -87,6 +87,10 @@ public class User implements Serializable {
     public void setUserLocation(String userLocation) {
         this.userLocation = userLocation;
     }
+
+    public String getGenderCriteria() {return genderCriteria;}
+
+    public void setGenderCriteria(String genderCriteria) {this.genderCriteria = genderCriteria;}
 
     public void setUserAge(int userAge) {
         this.userAge = userAge;

@@ -1,77 +1,87 @@
 package com.example.prorandomchata;
 
-import com.example.prorandomchata.Controller.IOSystem;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.Socket;
+import java.io.ObjectOutputStream;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.List;
 
 public class LoginController {
-    private Stage stage;
-    private Scene scene;
-    private Parent root;
-    private ChatServer chatServer;
-    IOSystem ios = new IOSystem();
-    @FXML
-    private TextField loginUsername, regisUsername, regisLocation, regisFullname;
-    @FXML
-    private PasswordField loginPassword, regisPassword;
-    @FXML
-    private RadioButton male, female;
-    @FXML
-    private DatePicker regisDOB;
-    @FXML
-    private String gender = "";
-    private int userAge;
+    protected Stage stage;
+    protected Scene scene;
+    protected Parent root;
+    protected ObjectOutputStream oos;
+    protected MainController mainController;
 
-    public void genderSelect(ActionEvent event) {
-        if (male.isSelected()) gender = "Male";
-        if (female.isSelected()) gender = "Female";
+    @FXML
+    protected String gender = "";
+    protected Scene thisScene;
+    @FXML
+    protected Label loginLabel, userRegLabel, userRegPassLabel, userRegLocationLabel
+            , userRegBirthday, userRegGender, userFullNameLabel, regLabel;
+    @FXML
+    protected ImageView userImage, userPassImage;
+    @FXML
+    protected TextField loginUsername, regisUsername, regisLocation, regisFullname;
+    @FXML
+    protected PasswordField loginPassword, regisPassword;
+    @FXML
+    protected RadioButton male, female;
+    @FXML
+    protected DatePicker regisDOB;
+    @FXML
+    protected Button loginBtn, signUpBtn, loginShowBtn, regShowBtn;
+    @FXML
+    public void show(ActionEvent event){
+        userRegLabel.setVisible(!userRegLabel.isVisible());
+        userRegPassLabel.setVisible(!userRegPassLabel.isVisible());
+        userRegLocationLabel.setVisible(!userRegLocationLabel.isVisible());
+        userFullNameLabel.setVisible(!userFullNameLabel.isVisible());
+        userRegBirthday.setVisible(!userRegBirthday.isVisible());
+        userRegGender.setVisible(!userRegGender.isVisible());
+        regShowBtn.setVisible(!regShowBtn.isVisible());
+        regisUsername.setVisible(!regisUsername.isVisible());
+        regisPassword.setVisible(!regisPassword.isVisible());
+        regisFullname.setVisible(!regisFullname.isVisible());
+        regisLocation.setVisible(!regisLocation.isVisible());
+        regisDOB.setVisible(!regisDOB.isVisible());
+        regLabel.setVisible(!regLabel.isVisible());
+        signUpBtn.setVisible(!signUpBtn.isVisible());
+
+        loginLabel.setVisible(!loginLabel.isVisible());
+        loginUsername.setVisible(!loginUsername.isVisible());
+        loginPassword.setVisible(!loginPassword.isVisible());
+        loginBtn.setVisible(!loginBtn.isVisible());
+        userImage.setVisible(!userImage.isVisible());
+        male.setVisible(!male.isVisible());
+        female.setVisible(!female.isVisible());
+        userPassImage.setVisible(!userPassImage.isVisible());
+        loginShowBtn.setVisible(!loginShowBtn.isVisible());
+
     }
-
+    @FXML
     public void signUp(ActionEvent event) throws IOException, ClassNotFoundException {
-
+        if(regisUsername.getText().isEmpty())
+        {
+            regisUsername.setText("Hãy điền tên tài khoản!");
+            return;
+        }
         LocalDate today = LocalDate.now();
         LocalDate birthday = LocalDate.parse(regisDOB.getValue().toString());
-        userAge = Period.between(birthday, today).getYears();
+        int userAge = Period.between(birthday, today).getYears();
+        User newUser = new User(regisUsername.getText(), regisPassword.getText(), regisFullname.getText(), gender, regisLocation.getText(), userAge);
+        RequestFromUser request = new RequestFromUser(newUser, "#POST", "#Signup");
+        oos.writeObject(request);
+        oos.flush();
 
-        checkAccountUsed();
-    }
-
-    public void checkAccountUsed() throws IOException, ClassNotFoundException {
-        List<User> userAcounts = ios.read("userlist.txt");
-        boolean userIsAlreadyUsed = false;
-        User newUser = null;
-        for (User user : userAcounts) {
-            if (user.getUserName().equals(regisUsername.getText())) {
-                userIsAlreadyUsed = true;
-                break;
-            }
-        }
-        if (!userIsAlreadyUsed) {
-            newUser = new User(regisUsername.getText(), regisPassword.getText(), regisFullname.getText(),  gender, regisLocation.getText(), userAge);
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Noitification");
-            alert.setContentText("Đăng kí thành công!");
-            alert.show();
-            userAcounts.add(newUser);
-            ios.write(userAcounts, "userlist.txt");
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("WARNING");
-            alert.setContentText("Tên tài khoản đã được sử dụng. Vui lòng sử dụng tên khác");
-            alert.show();
-        }
         regisUsername.setText("");
         regisPassword.setText("");
         regisLocation.setText("");
@@ -80,55 +90,76 @@ public class LoginController {
         male.setSelected(false);
         female.setSelected(false);
     }
-
+    @FXML
     public void login(ActionEvent event) throws IOException, ClassNotFoundException {
-        List<User> userAcounts = ios.read("userlist.txt");
-        boolean userIsFound = false;
-        User userClient = null;
-        for(User user : userAcounts)
+        if(loginUsername.getText().isEmpty())
         {
-            if(user.getUserName().equals(loginUsername.getText()) && user.getUserPassword().equals(loginPassword.getText()))
-            {
-                userIsFound = true;
-                userClient = user;
-                break;
-            }
+            loginUsername.setText("Hãy điền tên đăng nhập!");
+            return;
         }
-        if(userIsFound)
-        {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Notification");
-            alert.setContentText("Success");
-            alert.show();
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("mainStage.fxml"));
-            root = loader.load();
-            MainController mainController = loader.getController();
-            mainController.setUser(userClient);
-            mainController.addRandomChatTab();
-
-            stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-            stage.setResizable(false);
-            scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        }
-        else
-        {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Notification");
-            alert.setContentText("Sai tên đăng nhập / mật khẩu");
-            alert.show();
-            loginPassword.setText("");
-        }
+        User newUser = new User("","","","","",0);
+        newUser.setUserName(loginUsername.getText());
+        newUser.setUserPassword(loginPassword.getText());
+        RequestFromUser requestFromUser = new RequestFromUser(newUser, "#POST", "#Login");
+        oos.writeObject(requestFromUser);
     }
 
-//    public ChatServer getChatServer() {
-//        return chatServer;
-//    }
+    public void genderSelect(ActionEvent event) {
+        if (male.isSelected()) gender = "Male";
+        if (female.isSelected()) gender = "Female";
+    }
 
-//    public void setChatServer(ChatServer chatServer)
-//    {
-//        this.chatServer = chatServer;
-//    }
+    public void loginSucess(User user) throws IOException {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Notification");
+        alert.setContentText("Success");
+        alert.show();
+
+        loginUsername.setText("");
+        loginPassword.setText("");
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("mainStage.fxml"));
+        root = loader.load();
+        mainController = loader.getController();
+        mainController.setLoginController(this);
+        mainController.setOos(oos);
+        mainController.setUser(user);
+        mainController.addRandomChatTab();
+
+        stage = (Stage) loginBtn.getScene().getWindow();
+        stage.setResizable(false);
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void loginFail() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Notification");
+        alert.setContentText("Sai tên đăng nhập / mật khẩu");
+        alert.show();
+        loginPassword.setText("");
+    }
+
+    public void setOos(ObjectOutputStream oos) {this.oos = oos;}
+
+    public void signUpSuccess() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Noitification");
+        alert.setContentText("Đăng kí thành công!");
+        alert.show();
+    }
+
+    public void signUpFail() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("WARNING");
+        alert.setContentText("Tên tài khoản đã được sử dụng. Vui lòng sử dụng tên khác");
+        alert.show();
+    }
+
+    public MainController getMainController() {return mainController;}
+
+    public Scene getThisScene() {return thisScene;}
+
+    public void setThisScene(Scene thisScene) {this.thisScene = thisScene;}
 }

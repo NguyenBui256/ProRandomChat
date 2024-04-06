@@ -13,23 +13,26 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainController {
-    private User sender;
-    private Stage stage;
-    private Scene scene;
-    private Parent root;
-
-    private ChatServer server;
-
+    protected User sender;
+    protected Stage stage;
+    protected Parent root;
+    protected ObjectOutputStream oos;
+    protected LoginController loginController;
+    protected SelfProfileController selfProfileController;
+    protected ChatTabController chatTabController;
     @FXML
-    private Label userName;
+    protected Label userName;
     @FXML
-    private ImageView userAvatar;
+    protected ImageView userAvatar;
     @FXML
-    private TabPane mainTabPane;
+    protected TabPane mainTabPane;
+    @FXML
+    protected TreeView<String> treeView;
     @FXML
     public void logout(ActionEvent event) throws IOException {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -38,11 +41,11 @@ public class MainController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if(result.get()== ButtonType.OK) {
-            root = FXMLLoader.load((AppStarter.class.getResource("loginForm.fxml")));
+            RequestFromUser request = new RequestFromUser(sender, "#POST", "#Logout");
+            oos.writeObject(request);
             stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             stage.setResizable(false);
-            scene = new Scene(root);
-            stage.setScene(scene);
+            stage.setScene(loginController.getThisScene());
             stage.show();
         }
     }
@@ -51,15 +54,14 @@ public class MainController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("selfProfile.fxml"));
         root = loader.load();
 
-        SelfProfileController selfProfileController = loader.getController();
-        selfProfileController.setUser(sender,this);
+        selfProfileController = loader.getController();
+        selfProfileController.setUser(sender,this, oos);
 
         Tab tab = new Tab();
         tab.setText("Your Profile (" + sender.getUserName() + ")");
         tab.setContent(root);
         checkTabUsing(tab);
     }
-
     public void addNewProfileTab(User user) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("profileTab.fxml"));
         root = loader.load();
@@ -71,38 +73,48 @@ public class MainController {
         tab.setContent(root);
         checkTabUsing(tab);
     }
+    public void setUser(User user) {
+        TreeItem<String> root = new TreeItem<>();
+        TreeItem<String> listFriend = new TreeItem<>("Danh sách bạn bè: " + "("+"1"+")");
+        TreeItem<String> friend1 = new TreeItem<>("Friend1"); //demo friend
+        listFriend.getChildren().add(friend1);
 
-    public void setUser(User user) throws IOException {
+        TreeItem<String> incomingMessage = new TreeItem<>("Thông báo: " + "("+"1"+")");
+        TreeItem<String> item1 = new TreeItem<>("Chào mừng người dùng mới!!");
+        incomingMessage.getChildren().add(item1);
+        root.getChildren().addAll(listFriend,incomingMessage);
+        root.setExpanded(false);
+        treeView.setRoot(root);
+        treeView.setShowRoot(false);
+
+
         this.sender = user;
-        userName.setText(user.getUserName());
+        userName.setText(user.getUserName() + ", " + user.getUserAge());
         userAvatar.setImage(new Image(new File(user.getUserAvatarPath()).toURI().toString()));
         userAvatar.setCache(true);
         userAvatar.setVisible(true);
     }
-
     public void addRandomChatTab() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("chatTab.fxml"));
         root = loader.load();
 
-        ChatTabController chatTabController = loader.getController();
-        chatTabController.setSender(sender,this);
+        chatTabController = loader.getController();
+        chatTabController.setSender(sender,this, oos);
 
         Tab tab = new Tab();
         tab.setText("Pro Random Chat");
         tab.setContent(root);
+        tab.setClosable(false);
         mainTabPane.getTabs().add(tab);
-        mainTabPane.getSelectionModel().selectLast();
     }
-
-    public void updateSave(User user) throws IOException {
+    public void updateSave(String tempName) throws IOException {
         mainTabPane.getTabs().forEach(tabI -> {
-            if(tabI.getText().equals(sender.getUserName())){
-                tabI.setText("Your Profile " + "("+user.getUserName()+")");
+            if(tabI.getText().equals("Your Profile " + "("+tempName+")")){
+                tabI.setText("Your Profile " + "("+sender.getUserName()+")");
             }
         });
-        setUser(user);
+//        setUser(user);
     }
-
     public void checkTabUsing(Tab tab){
         AtomicBoolean inUsed = new AtomicBoolean(false);
         mainTabPane.getTabs().forEach((tabI)->{
@@ -118,4 +130,14 @@ public class MainController {
             mainTabPane.getSelectionModel().selectLast();
         }
     }
+    public void setLoginController(LoginController loginController) {
+        this.loginController = loginController;
+    }
+    public void setOos(ObjectOutputStream oos) {
+        this.oos = oos;
+    }
+    public User getSender() {
+        return sender;
+    }
+    public SelfProfileController getSelfProfileController() {return selfProfileController;}
 }

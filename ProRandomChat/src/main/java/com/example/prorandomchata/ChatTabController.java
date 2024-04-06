@@ -20,6 +20,10 @@ public class ChatTabController implements Serializable{
     protected MainController mainController;
     protected User sender, receiver;
     protected ObjectOutputStream oos;
+    protected boolean partnerHasLeft;
+
+    @FXML
+    protected RadioButton onlyMale, onlyFemale, allGender;
 
     @FXML
     protected ImageView receiverAvatar;
@@ -32,33 +36,31 @@ public class ChatTabController implements Serializable{
 
     @FXML
     protected Button viewBtn, addFriendBtn, blockBtn, sendBtn, connectBtn, disconnectBtn, nextBtn;
+    @FXML
+    protected TitledPane settings;
 
     @FXML
     protected Label coverLayer;
 
     @FXML
-    public void view(ActionEvent event) throws IOException {
-        mainController.addNewProfileTab(receiver);
-    }
-
+    public void view(ActionEvent event) throws IOException {mainController.addNewProfileTab(receiver);}
     @FXML
     public void send(ActionEvent event) throws IOException {sendMessage();}
 
     @FXML
     public void connect(ActionEvent event) throws IOException {
         connectBtn.setVisible(false);
-        disconnectBtn.setVisible(true);
         coverLayer.setVisible(false);
-
-        Socket newUserSocket = new Socket("localhost", 3000);
-        this.oos = new ObjectOutputStream(newUserSocket.getOutputStream());
-        new UserManager(newUserSocket,this, oos).start();
-        System.out.println("Connected to the chat server");
-
-        oos.writeObject(new RequestFromUser(sender, "#POST", "#NewUser"));
+        disconnectBtn.setVisible(true);
+        settings.setExpanded(false);
+//        Socket newUserSocket = new Socket("localhost", 3000);
+//        this.oos = new ObjectOutputStream(newUserSocket.getOutputStream());
+//        new UserManager(newUserSocket, oos).start();
+//        System.out.println("Connected to the chat server");
+//
+        oos.writeObject(new RequestFromUser(sender, "#PUT", "#UserOnline"));
         oos.flush();
-
-        oos.writeObject(new RequestFromUser(sender, "#GET", "#Partner"));
+        oos.writeObject(new RequestFromUser(sender, "#GET", "#NewPartner"));
         oos.flush();
     }
 
@@ -68,87 +70,43 @@ public class ChatTabController implements Serializable{
         alert.setContentText("Xác nhận kết nối với người mới?");
         Optional<ButtonType> result = alert.showAndWait();
         if(result.get()== ButtonType.OK) {
-            connectToNewUserFirst();
+            if(partnerHasLeft){
+                RequestFromUser requestFromUser = new RequestFromUser(sender, "#PUT", "#ChangeUserLater");
+                oos.writeObject(requestFromUser);
+                oos.flush();
+            }
+            else connectToNewUserFirst();
+            nextBtn.setDisable(true);
         }
     }
-
-
-
-
     @FXML
-    public void disconnect(ActionEvent event) throws IOException {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setContentText("Xác nhận dừng Random Chat?");
-        Optional<ButtonType> result = alert.showAndWait();
-        if(result.get()== ButtonType.OK) {userDisconnect();}
-    }
+    public void setOnlyMale(ActionEvent event) throws IOException {changeGenderCriteria("Male");}
+    @FXML
+    public void setOnlyFemale(ActionEvent event) throws IOException {changeGenderCriteria("Female");}
+    @FXML
+    public void setAllGender(ActionEvent event) throws IOException {changeGenderCriteria("All");}
 
-    protected void connectToNewUserFirst() throws IOException {
-        textHistory.setText("");
-        textTyping.setText("");
-        RequestFromUser requestFromUser = new RequestFromUser(sender, "#POST", "#ChangeUserFirst");
-        requestFromUser.setPartner(receiver);
-        oos.writeObject(requestFromUser);
+    public void changeGenderCriteria(String gender) throws IOException {
+        sender.setGenderCriteria(gender);
+        RequestFromUser request = new RequestFromUser(sender, "#PUT", "#ChangeGenderCriteria");
+        System.out.println(sender.genderCriteria);
+        request.setMessage(gender);
+        settings.setExpanded(false);
+
+        oos.writeObject(request);
         oos.flush();
+
+        if(coverLayer.isVisible()) {oos.writeObject(new RequestFromUser(sender, "#GET", "#NewPartner"));}
     }
 
-    protected void connectToNewUserLater() throws IOException {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        Label label = new Label("Bạn chat của bạn đã rời đi, bạn có muốn chat với người khác không?" +
-                "\nNếu ở lại, lịch sử cuộc trò chuyện sẽ được giữ.");
-        label.setWrapText(true);
-        alert.getDialogPane().setContent(label);
-        Optional<ButtonType> result = alert.showAndWait();
-        if(result.get()== ButtonType.OK) {
-            textHistory.setText("");
-            textTyping.setText("");
-            RequestFromUser requestFromUser = new RequestFromUser(sender, "#POST", "#ChangeUserLater");
-            oos.writeObject(requestFromUser);
-            oos.flush();
-        }
-        else if(result.get() == ButtonType.NO)
-        {
-            System.out.println("Stay here");
-        }
-
-    }
-
-    protected void userDisconnect() throws IOException {
-        disconnectBtn.setVisible(false);
-        connectBtn.setVisible(true);
-        coverLayer.setVisible(true);
-        nextBtn.setVisible(false);
-        textTyping.setText("");
-        textHistory.setText("");
-
-        RequestFromUser disconnect = new RequestFromUser(sender, "#POST", "#Disconnect");
-        oos.writeObject(disconnect);
-        oos.flush();
-    }
-
-
-    protected void sendMessage() throws IOException {
-        if(!textTyping.getText().isEmpty())
-        {
-            String currentTime = new SimpleDateFormat("HH:mm:ss").format(new Date());
-            String text = "["+currentTime+"]" + " [" + sender.getUserName() + "]: " +  textTyping.getText();
-            textHistory.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-            textHistory.appendText(text + "\n");
-            textTyping.setText("");
-            textHistory.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-            RequestFromUser requestFromUser = new RequestFromUser(sender, "#POST", "#SendMessage");
-            requestFromUser.setPartner(receiver);
-            requestFromUser.setMessage(text);
-            oos.writeObject(requestFromUser);
-            oos.flush();
-        }
-    }
-
-    public void setSender(User sender, MainController mainController) throws IOException {
+    public void setSender(User sender, MainController mainController, ObjectOutputStream oos) throws IOException {
         this.sender = sender;
         this.mainController = mainController;
+        this.oos = oos;
 
         //View settings
+        settings.setVisible(true);
+        allGender.setSelected(true);
         addFriendBtn.setVisible(false);
         viewBtn.setVisible(false);
         nextBtn.setVisible(false);
@@ -165,15 +123,112 @@ public class ChatTabController implements Serializable{
             }
         });
         disconnectBtn.setVisible(false);
-        coverLayer.setStyle("-fx-background-color:gray; -fx-opacity:0.3");
+        coverLayer.setStyle("-fx-background-color:gray; -fx-opacity:0.5");
         coverLayer.setVisible(true);
         connectBtn.setVisible(true);
     }
+
+
+//    @FXML
+//    public void block(ActionEvent event) throws IOException {
+//        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+//        alert.setContentText("Bạn có muốn chặn người này?");
+//        Optional<ButtonType> result = alert.showAndWait();
+//        if(result.get()== ButtonType.OK) {blockPartner();}
+//    }
+
+//    private void blockPartner() throws IOException {
+//        RequestFromUser requestFromUser = new RequestFromUser(sender,"#POST", "#Block");
+//        requestFromUser.setPartner(receiver);
+//        oos.writeObject(requestFromUser);
+//        oos.flush();
+//    }
+
+
+    @FXML
+    public void disconnect(ActionEvent event) throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setContentText("Xác nhận dừng Random Chat?");
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.get()== ButtonType.OK) {userDisconnect();}
+    }
+
+    protected void connectToNewUserFirst() throws IOException {
+        textHistory.setText("");
+        textTyping.setText("");
+        RequestFromUser requestFromUser = new RequestFromUser(sender, "#PUT", "#ChangeUserFirst");
+        requestFromUser.setPartner(receiver);
+        oos.writeObject(requestFromUser);
+        oos.flush();
+    }
+
+    protected void connectToNewUserLater() throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        Label label = new Label("Bạn chat của bạn đã rời đi, bạn có muốn chat với người khác không?" +
+                "\nNếu ở lại, lịch sử cuộc trò chuyện sẽ được giữ.");
+        label.setWrapText(true);
+        alert.getDialogPane().setContent(label);
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.get()== ButtonType.OK) {
+            textHistory.setText("");
+            textTyping.setText("");
+            RequestFromUser requestFromUser = new RequestFromUser(sender, "#PUT", "#ChangeUserLater");
+            oos.writeObject(requestFromUser);
+            oos.flush();
+
+            if(coverLayer.isVisible())
+            {
+                viewBtn.setVisible(false);
+                addFriendBtn.setVisible(false);
+            }
+        }
+        else{
+            partnerHasLeft = true;
+            textTyping.setEditable(false);
+        }
+    }
+
+    protected void userDisconnect() throws IOException {
+        unsetReceiver();
+        unSetWaitScreen();
+        disconnectBtn.setVisible(false);
+        addFriendBtn.setVisible(false);
+        viewBtn.setVisible(false);
+        connectBtn.setVisible(true);
+        coverLayer.setVisible(true);
+        nextBtn.setVisible(false);
+        textTyping.setText("");
+        textHistory.setText("");
+
+        RequestFromUser disconnectRequest = new RequestFromUser(sender, "#POST", "#Disconnect");
+        disconnectRequest.setPartner(receiver);
+        oos.writeObject(disconnectRequest);
+        oos.flush();
+    }
+
+
+    protected void sendMessage() throws IOException {
+        if(!textTyping.getText().isEmpty())
+        {
+            String currentTime = new SimpleDateFormat("HH:mm:ss").format(new Date());
+            String text = "["+currentTime+"]" + " [" + sender.getUserName() + "]: " +  textTyping.getText();
+            textHistory.appendText(text);
+            textTyping.setText("");
+            RequestFromUser requestFromUser = new RequestFromUser(sender, "#POST", "#SendMessage");
+            requestFromUser.setPartner(receiver);
+            requestFromUser.setMessage(text);
+            oos.writeObject(requestFromUser);
+            oos.flush();
+        }
+    }
+
     public void setReceiver(User receiver)
     {
         addFriendBtn.setVisible(true);
         viewBtn.setVisible(true);
         nextBtn.setVisible(true);
+        nextBtn.setDisable(false);
+        partnerHasLeft = false;
         this.receiver = receiver;
         receiverName.setText(receiver.getUserName());
         receiverAge.setText(String.valueOf(receiver.getUserAge()));
@@ -194,23 +249,9 @@ public class ChatTabController implements Serializable{
         return textHistory;
     }
 
-    public TextArea getTextTyping() {
-        return textTyping;
-    }
-
-    public Button getSendBtn() {
-        return sendBtn;
-    }
-
-    public User getSender() {
-        return sender;
-    }
 
     public void setWaitScreen() {
         coverLayer.setVisible(true);
-        coverLayer.setTextAlignment(TextAlignment.JUSTIFY);
-        coverLayer.setFont(new Font("Arial", 12));
-        coverLayer.setText("Matching...");
     }
 
     public void unSetWaitScreen() {
