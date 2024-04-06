@@ -113,7 +113,7 @@ public class ChatTabController implements Serializable{
         textHistory.setEditable(false);
         textTyping.setEditable(true);
         textTyping.setOnKeyPressed(event -> {
-            if(event.getCode() == KeyCode.ENTER)
+            if(!textTyping.getText().isEmpty() && event.getCode() == KeyCode.ENTER)
             {
                 try {
                     sendMessage();
@@ -212,7 +212,8 @@ public class ChatTabController implements Serializable{
         {
             String currentTime = new SimpleDateFormat("HH:mm:ss").format(new Date());
             String text = "["+currentTime+"]" + " [" + sender.getUserName() + "]: " +  textTyping.getText();
-            textHistory.appendText(text);
+            text = text.replace("\n", "");
+            textHistory.appendText(text + "\n");
             textTyping.setText("");
             RequestFromUser requestFromUser = new RequestFromUser(sender, "#POST", "#SendMessage");
             requestFromUser.setPartner(receiver);

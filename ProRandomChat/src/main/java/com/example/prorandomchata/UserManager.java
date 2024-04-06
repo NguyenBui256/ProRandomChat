@@ -142,7 +142,7 @@ public class UserManager extends Thread {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                chatTabController.getTextHistory().appendText((String)fromServer.getObject());
+                chatTabController.getTextHistory().appendText(fromServer.getObject() + "\n");
             }
         });
     }
