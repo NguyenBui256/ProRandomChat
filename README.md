@@ -13,21 +13,21 @@ The project was done by [Bùi Thế Vĩnh Nguyên](https://github.com/NguyenBui2
 ## Installation
 
 - Clone the repo
-- Open: Product \ GameLauncher (Batch File). 
-- Enjoy the game
+- Enter ProRandomChat folder.
+- Run Server.jar first
+- Run Application.jar for each user.
 
 ## Demo
 
-### **Gameplay video:** https://youtu.be/fZVCTERTjYk?si=9a7hu1h-TyfYEegJ
-### **Images**:
-
+### **Demo video:** 
+https://youtu.be/fZVCTERTjYk?si=9a7hu1h-TyfYEegJ
+### **Images:**:
 ![alt text](sc1-1.png) 
 ![alt text](sc6-1.png)
 ![alt text](sc2-1.png) 
 ![alt text](sc3-1.png) 
 ![alt text](sc4-1.png) 
 ![alt text](sc5-1.png) 
-
 
 
 ## Usage
@@ -54,8 +54,6 @@ The project was done by [Bùi Thế Vĩnh Nguyên](https://github.com/NguyenBui2
 <<<<<<< HEAD
 │   ├── AppStarter.java
 │   ├── ServerStarter.java
-=======
->>>>>>> 7351fbebfd631f23b5d65fbdea8da80fdae444d6
 
 
 ```
