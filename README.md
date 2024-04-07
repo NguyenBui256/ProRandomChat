@@ -51,7 +51,6 @@ https://youtu.be/fZVCTERTjYk?si=9a7hu1h-TyfYEegJ
 │   │   │   ├── ChatServer.java
 │   │   │   ├── RequestFromUser.java
 │   │   │   ├── ResponseFromServer.java
-<<<<<<< HEAD
 │   ├── AppStarter.java
 │   ├── ServerStarter.java
 
