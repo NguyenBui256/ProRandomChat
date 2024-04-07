@@ -47,8 +47,10 @@ The project was done by [Bùi Thế Vĩnh Nguyên](https://github.com/NguyenBui2
 │   │   │   ├── UserManager.java
 │   │   │   ├── ServerManager.java
 │   ├── Model
-│   │   │   ├── saveLoadFunction.java
-│   │   │   ├── leaderBoard.txt
+│   │   │   ├── User.java
+│   │   │   ├── ChatServer.java
+│   │   │   ├── RequestFromUser.java
+│   │   │   ├── ResponseFromServer.java
 
 
 ```
