@@ -18,7 +18,7 @@ The project was done by [Bùi Thế Vĩnh Nguyên](https://github.com/NguyenBui2
 
 ## Demo
 
-### **Gameplay video:** 
+### **Gameplay video:** https://youtu.be/fZVCTERTjYk?si=9a7hu1h-TyfYEegJ
 ### **Images**:
 
 ![alt text](sc1-1.png) 
