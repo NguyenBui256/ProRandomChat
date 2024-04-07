@@ -51,8 +51,11 @@ The project was done by [Bùi Thế Vĩnh Nguyên](https://github.com/NguyenBui2
 │   │   │   ├── ChatServer.java
 │   │   │   ├── RequestFromUser.java
 │   │   │   ├── ResponseFromServer.java
+<<<<<<< HEAD
 │   ├── AppStarter.java
 │   ├── ServerStarter.java
+=======
+>>>>>>> 7351fbebfd631f23b5d65fbdea8da80fdae444d6
 
 
 ```
