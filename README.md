@@ -37,15 +37,16 @@ The project was done by [Bùi Thế Vĩnh Nguyên](https://github.com/NguyenBui2
 ```bash
 
 ├── src
-│   ├── Audio
-│   ├── Classes
-│   │   │   ├── Ingame.java
-│   │   │   ├── Main.java
-│   │   │   ├── Starting.java
-│   │   │   ├── Leader.java
-│   │   │   ├── Board.java
-│   │   │   ├── Settings.java
-│   ├── Data
+│   ├── Controller
+│   │   │   ├── LoginController.java
+│   │   │   ├── MainController.java
+│   │   │   ├── ChatTabController.java
+│   │   │   ├── ProfileTabController.java
+│   │   │   ├── SelfProfileController.java
+│   │   │   ├── IOSystem.java
+│   │   │   ├── UserManager.java
+│   │   │   ├── ServerManager.java
+│   ├── Model
 │   │   │   ├── saveLoadFunction.java
 │   │   │   ├── leaderBoard.txt
 
