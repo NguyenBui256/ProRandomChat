@@ -18,7 +18,7 @@ The project was done by [Bùi Thế Vĩnh Nguyên](https://github.com/NguyenBui2
 
 ## Demo
 
-### **Gameplay video:** 
+### **Gameplay video:** https://youtu.be/fZVCTERTjYk?si=9a7hu1h-TyfYEegJ
 ### **Images**:
 
 ![alt text](sc1-1.png) 
@@ -37,17 +37,22 @@ The project was done by [Bùi Thế Vĩnh Nguyên](https://github.com/NguyenBui2
 ```bash
 
 ├── src
-│   ├── Audio
-│   ├── Classes
-│   │   │   ├── Ingame.java
-│   │   │   ├── Main.java
-│   │   │   ├── Starting.java
-│   │   │   ├── Leader.java
-│   │   │   ├── Board.java
-│   │   │   ├── Settings.java
-│   ├── Data
-│   │   │   ├── saveLoadFunction.java
-│   │   │   ├── leaderBoard.txt
+│   ├── Controller
+│   │   │   ├── LoginController.java
+│   │   │   ├── MainController.java
+│   │   │   ├── ChatTabController.java
+│   │   │   ├── ProfileTabController.java
+│   │   │   ├── SelfProfileController.java
+│   │   │   ├── IOSystem.java
+│   │   │   ├── UserManager.java
+│   │   │   ├── ServerManager.java
+│   ├── Model
+│   │   │   ├── User.java
+│   │   │   ├── ChatServer.java
+│   │   │   ├── RequestFromUser.java
+│   │   │   ├── ResponseFromServer.java
+│   ├── AppStarter.java
+│   ├── ServerStarter.java
 
 
 ```
